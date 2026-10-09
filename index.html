@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book an appointment · অ্যাপয়েন্টমেন্ট</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF3F3; --card:#FFFFFF; --ink:#13262B; --muted:#5A6E73; --line:#CBD8DA;
+  --brand:#0F5C5C; --brand-ink:#FFFFFF; --soft:#DCEBEA; --warn:#B4412F; --off:#E6ECEC;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0D1A1D;--card:#142428;--ink:#E4EEEE;--muted:#93A9AD;--line:#2B4247;--brand:#5CC0BA;--brand-ink:#08201F;--soft:#1B3438;--warn:#F08A77;--off:#1A2D31}
+}
+:root[data-theme="dark"]{--bg:#0D1A1D;--card:#142428;--ink:#E4EEEE;--muted:#93A9AD;--line:#2B4247;--brand:#5CC0BA;--brand-ink:#08201F;--soft:#1B3438;--warn:#F08A77;--off:#1A2D31}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Hind Siliguri",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:20px}
+h1{font:600 28px/1.15 Newsreader,Georgia,"Hind Siliguri",serif;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:none}
+.lang button{border:0;background:transparent;color:var(--muted);padding:6px 12px;font:500 14px inherit;font-family:inherit;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+legend,label.l{display:block;font-weight:600;font-size:15px;margin:0 0 8px;padding:0}
+.hint{font-weight:400;color:var(--muted);font-size:13px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{margin-bottom:14px}.field:last-child{margin-bottom:0}
+input[type=text],input[type=tel],input[type=number],textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:10px 12px;font:inherit}
+textarea{min-height:84px;resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible,.opt input:focus-visible+span{outline:3px solid var(--brand);outline-offset:2px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt span{display:block;border:1px solid var(--line);border-radius:8px;padding:8px 14px;background:var(--bg);font-size:15px}
+.opt input:checked+span{background:var(--soft);border-color:var(--brand);color:var(--ink);box-shadow:inset 0 0 0 1px var(--brand);font-weight:600}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.day{flex:none;width:64px;text-align:center;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px 0;cursor:pointer;font:inherit}
+.day b{display:block;font-size:20px;line-height:1.2}
+.day small{display:block;color:var(--muted);font-size:12px}
+.day[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.day[aria-pressed="true"] small{color:var(--brand-ink)}
+.day:disabled{background:var(--off);color:var(--muted);cursor:not-allowed;opacity:.7}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.slot{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:9px 0;font:inherit;font-size:15px;cursor:pointer}
+.slot[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink);font-weight:600}
+.slot:disabled{background:var(--off);color:var(--muted);text-decoration:line-through;cursor:not-allowed;opacity:.7}
+.go:disabled{opacity:.6;cursor:wait}
+.empty{color:var(--muted);font-size:14px;margin:0}
+.err{color:var(--warn);font-size:13px;margin:6px 0 0;min-height:0}
+.err:empty{display:none}
+.invalid input[type=text],.invalid input[type=tel],.invalid input[type=number]{border-color:var(--warn)}
+.go{width:100%;border:0;background:var(--brand);color:var(--brand-ink);border-radius:10px;padding:14px;font:600 17px inherit;font-family:inherit;cursor:pointer}
+.clinic{font-size:14px;color:var(--muted);text-align:center;margin:16px 0 0}
+.done h2{font:600 24px/1.2 Newsreader,Georgia,"Hind Siliguri",serif;margin:0 0 6px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:16px 0;font-size:15px}
+dt{color:var(--muted)}dd{margin:0;font-weight:500;overflow-wrap:anywhere}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btns button{flex:1;min-width:140px;border:1px solid var(--brand);background:transparent;color:var(--ink);border-radius:10px;padding:11px;font:500 15px inherit;font-family:inherit;cursor:pointer}
+.btns button.p{background:var(--brand);color:var(--brand-ink)}
+.note{background:var(--soft);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:14px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.done{animation:in .25s ease-out}@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1 data-t="title">Book an appointment</h1>
+      <p class="sub" data-t="sub">Neurology &amp; Medicine · Saturday–Thursday, 4–9 pm</p>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="bn" aria-pressed="false">বাং</button>
+    </div>
+  </header>
+
+  <form id="f" novalidate>
+    <div class="card">
+      <div class="field" id="g-name">
+        <label class="l" for="name" data-t="name">Patient's full name</label>
+        <input type="text" id="name" autocomplete="name">
+        <p class="err" id="e-name"></p>
+      </div>
+      <div class="row">
+        <div class="field" id="g-age">
+          <label class="l" for="age" data-t="age">Age</label>
+          <input type="number" id="age" min="0" max="120" inputmode="numeric">
+          <p class="err" id="e-age"></p>
+        </div>
+        <fieldset class="field">
+          <legend data-t="sex">Sex</legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="sex" value="M" checked><span data-t="male">Male</span></label>
+            <label class="opt"><input type="radio" name="sex" value="F"><span data-t="female">Female</span></label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="field" id="g-phone">
+        <label class="l" for="phone" data-t="phone">Mobile number</label>
+        <input type="tel" id="phone" inputmode="tel" autocomplete="tel" placeholder="01XXXXXXXXX">
+        <p class="err" id="e-phone"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <fieldset class="field">
+        <legend data-t="visit">Type of visit</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="visit" value="new" checked><span data-t="vnew">New patient</span></label>
+          <label class="opt"><input type="radio" name="visit" value="follow"><span data-t="vfollow">Follow-up</span></label>
+          <label class="opt"><input type="radio" name="visit" value="report"><span data-t="vreport">Report review</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="field">
+        <legend><span data-t="reason">Main problem</span> <span class="hint" data-t="multi">(select all that apply)</span></legend>
+        <div class="opts" id="reasons"></div>
+      </fieldset>
+      <div class="field">
+        <label class="l" for="details"><span data-t="details">Anything else the doctor should know</span> <span class="hint" data-t="optional">(optional)</span></label>
+        <textarea id="details"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <fieldset class="field" id="g-date">
+        <legend data-t="date">Choose a day</legend>
+        <div class="days" id="days"></div>
+        <p class="err" id="e-date"></p>
+      </fieldset>
+      <fieldset class="field" id="g-time">
+        <legend data-t="time">Choose a time</legend>
+        <div class="slots" id="slots"></div>
+        <p class="empty" id="no-slots" hidden></p>
+        <p class="err" id="e-time"></p>
+      </fieldset>
+    </div>
+
+    <button class="go" type="submit" data-t="submit">Request appointment</button>
+    <p class="clinic">Popular Consultation Center-4, Room 101<br>Dhap, Jail Road, Rangpur</p>
+  </form>
+
+  <section class="card done" id="done" hidden aria-live="polite">
+    <h2 data-t="doneTitle">Appointment requested</h2>
+    <p class="sub" data-t="doneSub">Please keep this summary. Show it at the front desk when you arrive.</p>
+    <dl id="summary"></dl>
+    <div class="btns">
+      <button type="button" class="p" id="copy" data-t="copy">Copy details</button>
+      <button type="button" id="again" data-t="again">Book another</button>
+    </div>
+    <p class="note" data-t="bring">Bring previous prescriptions and any reports, CT or MRI films.</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  var T={
+    en:{title:"Book an appointment",sub:"Neurology & Medicine · Saturday–Thursday, 4–9 pm",name:"Patient's full name",age:"Age",sex:"Sex",male:"Male",female:"Female",phone:"Mobile number",visit:"Type of visit",vnew:"New patient",vfollow:"Follow-up",vreport:"Report review",reason:"Main problem",multi:"(select all that apply)",details:"Anything else the doctor should know",optional:"(optional)",date:"Choose a day",time:"Choose a time",submit:"Request appointment",doneTitle:"Appointment requested",doneSub:"Please keep this summary. Show it at the front desk when you arrive.",copy:"Copy details",copied:"Copied",again:"Book another",bring:"Bring previous prescriptions and any reports, CT or MRI films.",eName:"Enter the patient's name.",eAge:"Enter an age between 0 and 120.",ePhone:"Enter a valid mobile number, like 01712345678.",eDate:"Choose a day.",eTime:"Choose a time.",noSlots:"All times for today have passed. Choose another day.",fri:"Closed on Fridays",today:"Today",sending:"Sending…",eTaken:"That time was just booked by someone else. Choose another time.",eNet:"Could not reach the booking system. Check your internet and try again.",full:"All times on this day are booked. Choose another day.",
+      r:["Headache","Stroke / paralysis","Seizure / fits","Tremor / movement","Numbness / weakness","Dizziness","Memory problem","Other"],
+      s:{name:"Patient",agei:"Age",ph:"Mobile",vis:"Visit",prob:"Problem",when:"When"},visits:{new:"New patient",follow:"Follow-up",report:"Report review"},loc:"en-GB"},
+    bn:{title:"অ্যাপয়েন্টমেন্ট নিন",sub:"নিউরোলজি ও মেডিসিন · শনিবার–বৃহস্পতিবার, বিকাল ৪টা–রাত ৯টা",name:"রোগীর পূর্ণ নাম",age:"বয়স",sex:"লিঙ্গ",male:"পুরুষ",female:"মহিলা",phone:"মোবাইল নম্বর",visit:"ভিজিটের ধরন",vnew:"নতুন রোগী",vfollow:"ফলো-আপ",vreport:"রিপোর্ট দেখানো",reason:"প্রধান সমস্যা",multi:"(এক বা একাধিক বাছুন)",details:"ডাক্তারের জানা দরকার এমন আর কিছু",optional:"(ঐচ্ছিক)",date:"দিন বাছুন",time:"সময় বাছুন",submit:"অ্যাপয়েন্টমেন্টের অনুরোধ করুন",doneTitle:"অনুরোধ নেওয়া হয়েছে",doneSub:"এই তথ্য সংরক্ষণ করুন। চেম্বারে এসে রিসেপশনে দেখান।",copy:"তথ্য কপি করুন",copied:"কপি হয়েছে",again:"আরেকটি নিন",bring:"আগের প্রেসক্রিপশন, রিপোর্ট এবং সিটি বা এমআরআই ফিল্ম সঙ্গে আনুন।",eName:"রোগীর নাম লিখুন।",eAge:"০ থেকে ১২০ এর মধ্যে বয়স লিখুন।",ePhone:"সঠিক মোবাইল নম্বর দিন, যেমন 01712345678।",eDate:"একটি দিন বাছুন।",eTime:"একটি সময় বাছুন।",noSlots:"আজকের সব সময় পার হয়ে গেছে। অন্য দিন বাছুন।",fri:"শুক্রবার বন্ধ",today:"আজ",sending:"পাঠানো হচ্ছে…",eTaken:"এই সময়টি এইমাত্র অন্য কেউ নিয়েছেন। অন্য সময় বাছুন।",eNet:"বুকিং সিস্টেমে সংযোগ হয়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।",full:"এই দিনের সব সময় বুক হয়ে গেছে। অন্য দিন বাছুন।",
+      r:["মাথাব্যথা","স্ট্রোক / প্যারালাইসিস","খিঁচুনি","হাত-পা কাঁপা","অসাড়তা / দুর্বলতা","মাথা ঘোরা","স্মৃতিভ্রংশ","অন্যান্য"],
+      s:{name:"রোগী",agei:"বয়স",ph:"মোবাইল",vis:"ভিজিট",prob:"সমস্যা",when:"সময়"},visits:{new:"নতুন রোগী",follow:"ফলো-আপ",report:"রিপোর্ট দেখানো"},loc:"bn-BD"}
+  };
+  var lang="en", selDate=null, selTime=null, reasons=[];
+  var $=function(id){return document.getElementById(id)};
+  var API="https://script.google.com/macros/s/AKfycby-bWjzGBLCdZUig_EyyH4m74OJkSozyAfhv_x7GyI2rOlBeBNSobut6zGJMASdkqs_iw/exec";
+  var START=16*60, END=21*60, STEP=20;
+  function timeEN(m){var h=Math.floor(m/60),mm=m%60,h12=((h+11)%12)+1;return h12+":"+(mm<10?"0":"")+mm+" "+(h>=12?"PM":"AM")}
+  var slotReq=0;
+  function api(params){return fetch(API+"?"+new URLSearchParams(params).toString()).then(function(r){return r.json()})}
+  function markBooked(){
+    var my=++slotReq, date=selDate, box=$("slots");
+    box.setAttribute("aria-busy","true");
+    api({action:"slots",date:date}).then(function(res){
+      if(my!==slotReq) return;
+      var taken=res.booked||[], free=0;
+      [].forEach.call(box.children,function(c){
+        var t=taken.indexOf(c.dataset.en)>-1; c.disabled=t; if(!t) free++;
+        if(t && selTime===+c.dataset.m){selTime=null; c.setAttribute("aria-pressed","false")}
+      });
+      if(!free){$("no-slots").textContent=T[lang].full; $("no-slots").hidden=false}
+    }).catch(function(){ if(my===slotReq) setErr("time",T[lang].eNet) })
+    .then(function(){ if(my===slotReq) box.removeAttribute("aria-busy") });
+  } // 4:00 pm – 9:00 pm, 20-minute slots
+
+  function fmtTime(m){
+    var h=Math.floor(m/60), mm=m%60, h12=((h+11)%12)+1;
+    var s=h12+":"+(mm<10?"0":"")+mm+" "+(h>=12?"PM":"AM");
+    if(lang==="bn"){s=new Intl.NumberFormat("bn-BD",{useGrouping:false}).format(h12)+":"+new Intl.NumberFormat("bn-BD",{minimumIntegerDigits:2}).format(mm)+(h>=12?(h<18?" বিকাল":" রাত"):" সকাল")}
+    return s;
+  }
+  function nf(n){return lang==="bn"?new Intl.NumberFormat("bn-BD",{useGrouping:false}).format(n):String(n)}
+
+  function buildReasons(){
+    var box=$("reasons"), checked=reasons.slice(); box.innerHTML="";
+    T[lang].r.forEach(function(txt,i){
+      var l=document.createElement("label"); l.className="opt";
+      l.innerHTML='<input type="checkbox" value="'+i+'"><span></span>';
+      l.querySelector("span").textContent=txt;
+      var inp=l.querySelector("input"); inp.checked=checked.indexOf(i)>-1;
+      inp.addEventListener("change",function(){
+        reasons=[].slice.call(box.querySelectorAll("input:checked")).map(function(x){return +x.value});
+      });
+      box.appendChild(l);
+    });
+  }
+
+  function buildDays(){
+    var box=$("days"); box.innerHTML="";
+    var d=new Date(); d.setHours(0,0,0,0);
+    var shown=0;
+    for(var i=0;i<21 && shown<14;i++){
+      var x=new Date(d); x.setDate(d.getDate()+i);
+      var closed=x.getDay()===5, key=x.getFullYear()+"-"+("0"+(x.getMonth()+1)).slice(-2)+"-"+("0"+x.getDate()).slice(-2);
+      if(closed && i>0 && false) continue;
+      var b=document.createElement("button"); b.type="button"; b.className="day"; b.dataset.key=key;
+      b.dataset.ts=x.getTime();
+      var wd=x.toLocaleDateString(T[lang].loc,{weekday:"short"});
+      var mo=x.toLocaleDateString(T[lang].loc,{month:"short"});
+      b.innerHTML="<small>"+(i===0?T[lang].today:wd)+"</small><b>"+nf(x.getDate())+"</b><small>"+mo+"</small>";
+      b.setAttribute("aria-pressed",String(selDate===key));
+      if(closed){b.disabled=true;b.title=T[lang].fri}
+      else shown++;
+      b.addEventListener("click",function(){
+        selDate=this.dataset.key; selTime=null;
+        [].forEach.call(box.children,function(c){c.setAttribute("aria-pressed",String(c.dataset.key===selDate))});
+        buildSlots(); $("e-date").textContent="";
+      });
+      box.appendChild(b);
+    }
+    buildSlots();
+  }
+
+  function buildSlots(){
+    var box=$("slots"), none=$("no-slots"); box.innerHTML=""; none.hidden=true;
+    if(!selDate){return}
+    var btn=document.querySelector('.day[data-key="'+selDate+'"]');
+    var dayStart=+btn.dataset.ts, now=new Date(), isToday=dayStart===new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+    var nowMin=now.getHours()*60+now.getMinutes(), count=0;
+    for(var m=START;m<END;m+=STEP){
+      if(isToday && m<=nowMin+15) continue;
+      var s=document.createElement("button"); s.type="button"; s.className="slot"; s.textContent=fmtTime(m); s.dataset.m=m; s.dataset.en=timeEN(m);
+      s.setAttribute("aria-pressed",String(selTime===m));
+      s.addEventListener("click",function(){
+        selTime=+this.dataset.m;
+        [].forEach.call(box.children,function(c){c.setAttribute("aria-pressed",String(+c.dataset.m===selTime))});
+        $("e-time").textContent="";
+      });
+      box.appendChild(s); count++;
+    }
+    if(!count){none.textContent=T[lang].noSlots; none.hidden=false} else markBooked();
+  }
+
+  function applyLang(){
+    document.documentElement.lang=lang;
+    document.querySelectorAll("[data-t]").forEach(function(el){var v=T[lang][el.dataset.t]; if(v) el.textContent=v});
+    document.querySelectorAll(".lang button").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.lang===lang))});
+    document.title=T[lang].title;
+    buildReasons(); buildDays();
+    if(!$("done").hidden) renderSummary();
+  }
+
+  function setErr(id,msg){var g=$("g-"+id); $("e-"+id).textContent=msg||""; if(g&&["name","age","phone"].indexOf(id)>-1) g.classList.toggle("invalid",!!msg)}
+
+  function normPhone(v){
+    var bnd="০১২৩৪৫৬৭৮৯"; v=v.replace(/[০-৯]/g,function(c){return bnd.indexOf(c)}).replace(/[\s\-]/g,"");
+    return v;
+  }
+
+  function validate(){
+    var ok=true, t=T[lang], first=null;
+    function bad(id,msg,el){setErr(id,msg); ok=false; if(!first) first=el}
+    $("name").value.trim().length<2 ? bad("name",t.eName,$("name")) : setErr("name","");
+    var a=$("age").value; (a===""||+a<0||+a>120) ? bad("age",t.eAge,$("age")) : setErr("age","");
+    /^(\+?880|0)1[3-9]\d{8}$/.test(normPhone($("phone").value)) ? setErr("phone","") : bad("phone",t.ePhone,$("phone"));
+    selDate ? setErr("date","") : bad("date",t.eDate,$("days"));
+    selTime!==null ? setErr("time","") : bad("time",t.eTime,$("slots"));
+    if(first){first.scrollIntoView({block:"center"}); if(first.focus&&first.tagName==="INPUT") first.focus()}
+    return ok;
+  }
+
+  function data(){
+    var btn=document.querySelector('.day[data-key="'+selDate+'"]'), dt=new Date(+btn.dataset.ts);
+    var t=T[lang], visit=document.querySelector('input[name=visit]:checked').value;
+    var p=T[lang].r.filter(function(_,i){return reasons.indexOf(i)>-1}).join(", ")||"—";
+    var det=$("details").value.trim();
+    return [
+      [t.s.name,$("name").value.trim()],
+      [t.s.agei,nf($("age").value)+" · "+(document.querySelector('input[name=sex]:checked').value==="M"?t.male:t.female)],
+      [t.s.ph,normPhone($("phone").value)],
+      [t.s.vis,t.visits[visit]],
+      [t.s.prob,p+(det?" — "+det:"")],
+      [t.s.when,dt.toLocaleDateString(t.loc,{weekday:"long",day:"numeric",month:"long"})+", "+fmtTime(selTime)]
+    ];
+  }
+
+  function renderSummary(){
+    var dl=$("summary"); dl.innerHTML="";
+    data().forEach(function(r){
+      var dt=document.createElement("dt"), dd=document.createElement("dd");
+      dt.textContent=r[0]; dd.textContent=r[1]; dl.appendChild(dt); dl.appendChild(dd);
+    });
+  }
+
+  $("f").addEventListener("submit",function(e){
+    e.preventDefault();
+    if(!validate()) return;
+    var go=document.querySelector(".go"); go.disabled=true; go.textContent=T[lang].sending;
+    var det=$("details").value.trim();
+    var visit=document.querySelector('input[name=visit]:checked').value;
+    var probs=T.en.r.filter(function(_,i){return reasons.indexOf(i)>-1}).join(", ");
+    api({action:"book",name:$("name").value.trim(),age:$("age").value,
+      sex:document.querySelector('input[name=sex]:checked').value,phone:normPhone($("phone").value),
+      visit:T.en.visits[visit],problem:probs,details:det,date:selDate,time:timeEN(selTime)})
+    .then(function(res){
+      if(res&&res.ok){renderSummary(); $("f").hidden=true; $("done").hidden=false; window.scrollTo(0,0)}
+      else if(res&&res.error==="taken"){setErr("time",T[lang].eTaken); selTime=null; buildSlots(); $("g-time").scrollIntoView({block:"center"})}
+      else setErr("time",T[lang].eNet);
+    }).catch(function(){setErr("time",T[lang].eNet)})
+    .then(function(){go.disabled=false; go.textContent=T[lang].submit});
+  });
+  $("copy").addEventListener("click",function(){
+    var txt="Popular Consultation Center-4, Room 101, Dhap, Jail Road, Rangpur\n"+data().map(function(r){return r[0]+": "+r[1]}).join("\n");
+    var btn=this, ok=function(){var o=btn.textContent; btn.textContent=T[lang].copied; setTimeout(function(){btn.textContent=T[lang].copy},1500)};
+    try{navigator.clipboard.writeText(txt).then(ok,function(){})}catch(err){}
+  });
+  $("again").addEventListener("click",function(){
+    $("f").reset(); selDate=null; selTime=null; reasons=[]; ["name","age","phone"].forEach(function(i){setErr(i,"")});
+    $("done").hidden=true; $("f").hidden=false; applyLang(); window.scrollTo(0,0);
+  });
+  document.querySelectorAll(".lang button").forEach(function(b){b.addEventListener("click",function(){lang=b.dataset.lang; applyLang()})});
+  ["name","age","phone"].forEach(function(id){$(id).addEventListener("input",function(){setErr(id,"")})});
+  applyLang();
+})();
+</script>
+</body>
+</html>
